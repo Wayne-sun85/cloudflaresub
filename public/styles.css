@@ -388,6 +388,78 @@ button.small {
   margin-top: 24px;
 }
 
+#historySection {
+  margin-top: 24px;
+}
+
+.history-list {
+  display: grid;
+  gap: 12px;
+}
+
+.history-group {
+  display: grid;
+  gap: 10px;
+}
+
+.history-group h3 {
+  margin: 8px 0 0;
+}
+
+.history-group small {
+  margin-left: 6px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: normal;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid rgba(120, 140, 180, 0.16);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.history-item .hint {
+  margin: 5px 0 0;
+}
+
+.history-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.history-actions select {
+  max-width: 185px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 10px;
+  background: #0f172a;
+  color: var(--text);
+  padding: 8px;
+}
+
+@media (max-width: 600px) {
+  .history-item {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .history-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .history-actions select {
+    width: 100%;
+    max-width: none;
+  }
+}
+
 .section-desc {
   margin-top: 8px;
   color: var(--muted);
