@@ -121,7 +121,15 @@ form.addEventListener('submit', async (event) => {
 document.addEventListener('click', async (event) => {
   const historyButton = event.target.closest('[data-history-action]');
   if (historyButton) {
-    const entry = subscriptionHistory[Number(historyButton.dataset.historyIndex)];
+    const index = Number(historyButton.dataset.historyIndex);
+    const entry = subscriptionHistory[index];
+    if (!entry) return;
+    if (historyButton.dataset.historyAction === 'delete') {
+      if (window.confirm('从此浏览器的历史列表删除这个版本？已保存的订阅链接仍可使用。')) {
+        deleteHistory(index);
+      }
+      return;
+    }
     const format = historyButton.parentElement.querySelector('select')?.value || 'raw';
     const url = entry?.urls?.[format];
     if (!url) return;
@@ -208,6 +216,19 @@ function saveHistory(entry) {
   renderHistory();
 }
 
+function deleteHistory(index) {
+  const updated = subscriptionHistory.filter((_, itemIndex) => itemIndex !== index);
+  try {
+    localStorage.setItem(historyStorageKey, JSON.stringify(updated));
+  } catch {
+    warningBox.textContent = '删除失败，浏览器未能保存更改。请稍后重试。';
+    warningBox.classList.remove('hidden');
+    return;
+  }
+  subscriptionHistory = updated;
+  renderHistory();
+}
+
 function renderHistory() {
   historyEmpty.classList.toggle('hidden', subscriptionHistory.length > 0);
   const groups = new Map();
@@ -238,6 +259,7 @@ function renderHistory() {
         </select>
         <button type="button" class="secondary small" data-history-action="copy" data-history-index="${index}">复制链接</button>
         <button type="button" class="secondary small" data-history-action="qr" data-history-index="${index}">二维码</button>
+        <button type="button" class="secondary small history-delete" data-history-action="delete" data-history-index="${index}" aria-label="删除 ${escapeHtml(name)} 的这个历史版本">删除</button>
       </div>
     </article>`;
       }).join('')}
