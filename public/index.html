@@ -73,6 +73,13 @@ cf.example.com:443#US-Edge"
             </div>
           </div>
 
+          <div>
+            <label for="subscriptionName">订阅名称（用于区分多份订阅）</label>
+            <input id="subscriptionName" name="subscriptionName" type="text" list="subscriptionNames" placeholder="例如：美国线路、备用线路" maxlength="60" />
+            <datalist id="subscriptionNames"></datalist>
+            <p class="hint">更新已有订阅时，选择相同名称；新名称会建立另一组历史。</p>
+          </div>
+
           <div class="actions">
             <button id="submitBtn" type="submit">生成订阅</button>
             <button id="fillDemoBtn" type="button" class="secondary">填入演示数据</button>
@@ -85,7 +92,7 @@ cf.example.com:443#US-Edge"
             <li>不会帮你找优选 IP，只负责把你现成的优选 IP 替换进节点。</li>
             <li>生成的链接是“同一份节点内容”的不同导出格式，分别给不同客户端使用。</li>
             <li>推荐勾选“保留原 Host / SNI”，这样更适合 Cloudflare CDN 场景。</li>
-            <li>订阅链接里的节点信息会通过服务端密钥加密，请不要把链接公开分享。</li>
+            <li>订阅链接包含访问令牌，请不要把链接公开分享。</li>
           </ul>
 
           <div class="client-box">
@@ -246,6 +253,18 @@ cf.example.com:443#US-Edge"
             </table>
           </div>
         </div>
+      </section>
+
+      <section id="historySection" class="card stack-md">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">已保存</p>
+            <h2>历史订阅</h2>
+            <p class="section-desc">按订阅名称保存每次更新的版本。重新打开此网页，可复制任一版本的链接或查看二维码。更换浏览器或清除网站数据会清空此列表。</p>
+          </div>
+        </div>
+        <div id="historyEmpty" class="empty-state">当前浏览器还没有保存的订阅。</div>
+        <div id="historyList" class="history-list"></div>
       </section>
     </main>
 
