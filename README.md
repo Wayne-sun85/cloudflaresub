@@ -45,7 +45,7 @@ cloudflaresub/
 
 ### 1) 准备代码
 
-- 把本项目代码放到本地（你现在已经有）
+- 将本项目代码保存到自己的 GitHub 仓库
 - 确认 `wrangler.toml` 中 `name`、`main`、`assets` 路径与项目一致
 
 ### 2) 在 Dashboard 创建 Worker
@@ -58,7 +58,7 @@ cloudflaresub/
 ### 3) 绑定到 GitHub 仓库（推荐）
 
 - 在 `Workers & Pages` 点击 `Create` -> `Import a repository`
-- 授权 GitHub，并选择仓库 `InfiCheesy/cloudflaresub`
+- 授权 GitHub，并选择仓库 `Wayne-sun85/cloudflaresub`
 - 构建设置建议：
   - Framework preset: `None`
   - Build command: 留空
