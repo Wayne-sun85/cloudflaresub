@@ -433,6 +433,11 @@ async function buildDedupHash(body) {
   return sha256Hex(JSON.stringify(normalized));
 }
 
+async function keyHasExpiration(store, key) {
+  const result = await store.list({ prefix: key, limit: 1 });
+  return result.keys.some((item) => item.name === key && item.expiration !== undefined);
+}
+
 async function handleGenerate(request, env, url) {
   let body;
   try {
@@ -465,18 +470,22 @@ async function handleGenerate(request, env, url) {
   const dedupKey = `dedup:${dedupHash}`;
 
   let id = await env.SUB_STORE.get(dedupKey);
+  let existing = id ? await env.SUB_STORE.get(`sub:${id}`) : null;
 
-  if (!id) {
+  if (!existing) {
     id = await createUniqueShortId(env);
-    const ttl = 60 * 60 * 24 * 7; // 7天
-
-    await env.SUB_STORE.put(`sub:${id}`, JSON.stringify(payload), {
-      expirationTtl: ttl,
-    });
-
-    await env.SUB_STORE.put(dedupKey, id, {
-      expirationTtl: ttl,
-    });
+    await env.SUB_STORE.put(`sub:${id}`, JSON.stringify(payload));
+    await env.SUB_STORE.put(dedupKey, id);
+  } else {
+    // Older deployments used a seven-day TTL. Rewrite each expiring key once
+    // when its original input is generated again, preserving the same URL.
+    const subKey = `sub:${id}`;
+    if (await keyHasExpiration(env.SUB_STORE, subKey)) {
+      await env.SUB_STORE.put(subKey, existing);
+    }
+    if (await keyHasExpiration(env.SUB_STORE, dedupKey)) {
+      await env.SUB_STORE.put(dedupKey, id);
+    }
   }
 
   const origin = url.origin;
